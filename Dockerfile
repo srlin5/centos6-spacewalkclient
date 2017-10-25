@@ -6,16 +6,18 @@ MAINTAINER Theo Lew <theo@opsmen.nl
 
 # Add Repos and install Spacewalk client tools 
 
-RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm && rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm && yum update -y
+RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm && rpm -Uvh http://yum.spacewalkproject.org/2.7/RHEL/6/x86_64/spacewalk-repo-2.7-2.el6.noarch.rpm
+
+RUN yum update -y
+
+# Set timezone
+
+RUN cat /etc/sysconfig/clock > /dev/null && echo ZONE="Europe/Amsterdam" > /etc/sysconfig/clock && cp /etc/localtime /root/old.timezone && rm /etc/localtime && ln -s /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+
 
 # Install the Spacewalk software client registry software 
 
-RUN yum install rhn-client-tools rhn-check rhn-setup rhnsd m2crypto yum-rhn-plugin
-
-# Update software
-
-RUN yum update -y 
-
+RUN yum -y install rhn-client-tools rhn-check rhn-setup rhnsd m2crypto yum-rhn-plugin --skip-broken
 
 
 
